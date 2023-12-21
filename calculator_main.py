@@ -2,6 +2,9 @@ import sys
 from PyQt5.QtWidgets import *
 
 class Main(QDialog):
+    # 연산식 저장을 위한 전역 변수 선언
+    global_equation = ""
+
     def __init__(self):
         super().__init__()
         self.init_ui()
@@ -117,12 +120,14 @@ class Main(QDialog):
     def number_button_clicked(self, num):
         equation = self.equation.text()
         equation += str(num)
+        Main.global_equation += str(num)
         self.equation.setText(equation)
 
     def button_operation_clicked(self, operation):
-        equation = self.equation.text()
-        equation += operation
-        self.equation.setText(equation)
+        # equation = self.equation.text()
+        # equation += operation
+        Main.global_equation += operation
+        self.equation.setText("")
 
     ### 단항연산자 계산 함수
     # 역수
@@ -131,6 +136,7 @@ class Main(QDialog):
         try:
             result = 1 / float(equation)
             self.equation.setText(str(result))
+            Main.global_equation = str(result)
         except ZeroDivisionError:
             self.equation.setText("Error: Division by zero")
 
@@ -140,6 +146,7 @@ class Main(QDialog):
         try:
             result = float(equation) ** 2
             self.equation.setText(str(result))
+            Main.global_equation = str(result)
         except ValueError:
             self.equation.setText("Error: Invalid input")
         
@@ -149,21 +156,25 @@ class Main(QDialog):
         try:
             result = float(equation) ** 0.5
             self.equation.setText(str(result))
+            Main.global_equation = str(result)
         except ValueError:
             self.equation.setText("Error: Invalid input")
 
     def button_equal_clicked(self):
-        equation = self.equation.text()
-        solution = eval(equation)
-        self.equation.setText(str(solution))
+        # equation = self.equation.text()
+        # solution = eval(equation)
+        Main.global_equation = str(eval(Main.global_equation))
+        self.equation.setText(Main.global_equation)
 
     def button_clear_clicked(self):
         self.equation.setText("")
+        Main.global_equation = ""
 
     def button_backspace_clicked(self):
-        equation = self.equation.text()
-        equation = equation[:-1]
-        self.equation.setText(equation)
+        # equation = self.equation.text()
+        # equation = equation[:-1]
+        Main.global_equation = Main.global_equation[:-1]
+        self.equation.setText(Main.global_equation)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
