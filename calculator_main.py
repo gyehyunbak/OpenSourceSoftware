@@ -25,8 +25,6 @@ class Main(QDialog):
         button_product = QPushButton("x")
         button_division = QPushButton("/")
         button_modulo = QPushButton("%")
-        button_CE = QPushButton("CE")
-        button_C = QPushButton("C")
         button_inverse = QPushButton("1/x")
         button_square = QPushButton("x²")
         button_square_root = QPushButton("²√x")
@@ -36,16 +34,28 @@ class Main(QDialog):
         button_minus.clicked.connect(lambda state, operation = "-": self.button_operation_clicked(operation))
         button_product.clicked.connect(lambda state, operation = "*": self.button_operation_clicked(operation))
         button_division.clicked.connect(lambda state, operation = "/": self.button_operation_clicked(operation))
+        button_modulo.clicked.connect(lambda state, operation = "%": self.button_operation_clicked(operation))
+
+        ### 단항연산자 시그널 설정
+        button_inverse.clicked.connect(self.button_inverse_clicked)
+        button_square.clicked.connect(self.button_square_clicked)
+        button_square_root.clicked.connect(self.button_square_root_clicked)
 
         ### =, clear, backspace 버튼 생성
         button_equal = QPushButton("=")
         button_clear = QPushButton("Clear")
         button_backspace = QPushButton("Backspace")
 
-        ### =, clear, backspace 버튼 클릭 시 시그널 설정
+        ### CE, C 버튼 생성
+        button_CE = QPushButton("CE")
+        button_C = QPushButton("C")
+
+        ### =, clear, backspace, CE, C 버튼 클릭 시 시그널 설정
         button_equal.clicked.connect(self.button_equal_clicked)
         button_clear.clicked.connect(self.button_clear_clicked)
         button_backspace.clicked.connect(self.button_backspace_clicked)
+        button_CE.clicked.connect(self.button_clear_clicked)
+        button_C.clicked.connect(self.button_clear_clicked)
 
         ### 모든 버튼을 하나의 그리드 레이아웃 layout_buttons에 통합
         ### 연산버튼 추가
@@ -113,6 +123,34 @@ class Main(QDialog):
         equation = self.equation.text()
         equation += operation
         self.equation.setText(equation)
+
+    ### 단항연산자 계산 함수
+    # 역수
+    def button_inverse_clicked(self):
+        equation = self.equation.text()
+        try:
+            result = 1 / float(equation)
+            self.equation.setText(str(result))
+        except ZeroDivisionError:
+            self.equation.setText("Error: Division by zero")
+
+    # 제곱
+    def button_square_clicked(self):
+        equation = self.equation.text()
+        try:
+            result = float(equation) ** 2
+            self.equation.setText(str(result))
+        except ValueError:
+            self.equation.setText("Error: Invalid input")
+        
+    # 제곱근
+    def button_square_root_clicked(self):
+        equation = self.equation.text()
+        try:
+            result = float(equation) ** 0.5
+            self.equation.setText(str(result))
+        except ValueError:
+            self.equation.setText("Error: Invalid input")
 
     def button_equal_clicked(self):
         equation = self.equation.text()
